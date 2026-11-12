@@ -1,11 +1,32 @@
+
 {% extends 'base.html.twig' %}
 
-{% block title %}New Location{% endblock %}
+{% block title %}Dodaj lokalizację - Pogodynka{% endblock %}
 
 {% block body %}
-    <h1>Create new Location</h1>
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8 col-xl-7">
 
-    {{ include('location/_form.html.twig') }}
+            <div class="mb-4">
+                <a href="{{ path('app_location_index') }}"
+                   class="btn btn-outline-secondary btn-sm mb-3">
+                    &larr; Powrót do lokalizacji
+                </a>
 
-    <a href="{{ path('app_location_index') }}">back to list</a>
+                <h2 class="fw-bold mb-1">Dodaj lokalizację</h2>
+                <p class="text-muted">
+                    Wypełnij formularz, aby dodać nową lokalizację.
+                </p>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    {{ include('location/_form.html.twig', {
+                        'button_label': 'Dodaj lokalizację'
+                    }) }}
+                </div>
+            </div>
+
+        </div>
+    </div>
 {% endblock %}

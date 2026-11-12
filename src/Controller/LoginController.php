@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+
+final class LoginController extends AbstractController
+{
+    #[Route('/login', name: 'app_login')]
+    public function index(AuthenticationUtils $authenticationUtils): Response
+    {
+        // Pobranie bledu ostatniej proby logowania
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        // Pobranie ostatnio wpisanej nazwy uzytkownika
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        // Wyswietlenie formularza logowania
+        return $this->render('login/index.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error,
+        ]);
+    }
+}

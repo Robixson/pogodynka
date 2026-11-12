@@ -1,0 +1,77 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Logowanie - Pogodynka{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-5">
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-dark text-white text-center py-3">
+                        <h3 class="mb-0">Logowanie</h3>
+                    </div>
+
+                    <div class="card-body p-4">
+
+                        {% if error %}
+                            <div class="alert alert-danger" role="alert">
+                                Nieprawidłowy login lub hasło.
+                            </div>
+                        {% endif %}
+
+                        <form method="post" action="{{ path('app_login') }}">
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label">
+                                    Nazwa użytkownika
+                                </label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="_username"
+                                    class="form-control"
+                                    value="{{ last_username }}"
+                                    placeholder="Wpisz nazwę użytkownika"
+                                    autocomplete="username"
+                                    required
+                                    autofocus
+                                >
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">
+                                    Hasło
+                                </label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="_password"
+                                    class="form-control"
+                                    placeholder="Wpisz hasło"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                            </div>
+
+                            <input
+                                type="hidden"
+                                name="_csrf_token"
+                                value="{{ csrf_token('authenticate') }}"
+                            >
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    Zaloguj się
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

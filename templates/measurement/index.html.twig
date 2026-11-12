@@ -1,47 +1,136 @@
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Measurement index{% endblock %}
+{% block title %}Lista pomiarów{% endblock %}
 
 {% block body %}
-    <h1>Measurement index</h1>
+    <div class="container py-4">
+        <h1 class="mb-4">Lista pomiarów</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>Celsius</th>
-                <th>MeasurementName</th>
-                <th>Pressure</th>
-                <th>WindSpeed</th>
-                <th>Cloudiness</th>
-                <th>Humidity</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for measurement in measurements %}
-            <tr>
-                <td>{{ measurement.id }}</td>
-                <td>{{ measurement.date ? measurement.date|date('Y-m-d') : '' }}</td>
-                <td>{{ measurement.celsius }}</td>
-                <td>{{ measurement.measurementName }}</td>
-                <td>{{ measurement.pressure }}</td>
-                <td>{{ measurement.windSpeed }}</td>
-                <td>{{ measurement.cloudiness }}</td>
-                <td>{{ measurement.humidity }}</td>
-                <td>
-                    <a href="{{ path('app_measurement_show', {'id': measurement.id}) }}">show</a>
-                    <a href="{{ path('app_measurement_edit', {'id': measurement.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="9">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        {# Widok desktopowy - tabela #}
+        <div class="d-none d-md-block">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-bordered align-middle">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Data</th>
+                        <th>Temperatura (°C)</th>
+                        <th>Nazwa pomiaru</th>
+                        <th>Ciśnienie</th>
+                        <th>Prędkość wiatru</th>
+                        <th>Zachmurzenie</th>
+                        <th>Wilgotność</th>
+                        <th>Akcje</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for measurement in measurements %}
+                        <tr>
+                            <td>{{ measurement.id }}</td>
+                            <td>{{ measurement.date ? measurement.date|date('d.m.Y') : '' }}</td>
+                            <td>{{ measurement.celsius }}</td>
+                            <td>{{ measurement.measurementName }}</td>
+                            <td>{{ measurement.pressure }}</td>
+                            <td>{{ measurement.windSpeed }}</td>
+                            <td>{{ measurement.cloudiness }}</td>
+                            <td>{{ measurement.humidity }}</td>
+                            <td>
+                                {% if is_granted('ROLE_MEASUREMENT_SHOW') %}
+                                    <a class="btn btn-sm btn-primary mb-1"
+                                       href="{{ path('app_measurement_show', {'id': measurement.id}) }}">
+                                        Pokaż
+                                    </a>
+                                {% endif %}
 
-    <a href="{{ path('app_measurement_new') }}">Create new</a>
+                                {% if is_granted('ROLE_MEASUREMENT_EDIT') %}
+                                    <a class="btn btn-sm btn-warning mb-1"
+                                       href="{{ path('app_measurement_edit', {'id': measurement.id}) }}">
+                                        Edytuj
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center">Brak pomiarów.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {# Widok mobilny - karty #}
+        <div class="d-md-none">
+            {% for measurement in measurements %}
+                <div class="card shadow-sm mb-3">
+                    <div class="card-header bg-dark text-white">
+                        <strong>Pomiar #{{ measurement.id }}</strong>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="mb-2">
+                            <strong>Data:</strong>
+                            {{ measurement.date ? measurement.date|date('d.m.Y') : '' }}
+                        </p>
+
+                        <p class="mb-2">
+                            <strong>Temperatura:</strong>
+                            {{ measurement.celsius }} °C
+                        </p>
+
+                        <p class="mb-2">
+                            <strong>Nazwa pomiaru:</strong>
+                            {{ measurement.measurementName }}
+                        </p>
+
+                        <p class="mb-2">
+                            <strong>Ciśnienie:</strong>
+                            {{ measurement.pressure }}
+                        </p>
+
+                        <p class="mb-2">
+                            <strong>Prędkość wiatru:</strong>
+                            {{ measurement.windSpeed }}
+                        </p>
+
+                        <p class="mb-2">
+                            <strong>Zachmurzenie:</strong>
+                            {{ measurement.cloudiness }}
+                        </p>
+
+                        <p class="mb-3">
+                            <strong>Wilgotność:</strong>
+                            {{ measurement.humidity }}
+                        </p>
+
+                        {% if is_granted('ROLE_MEASUREMENT_SHOW') %}
+                            <a class="btn btn-primary btn-sm"
+                               href="{{ path('app_measurement_show', {'id': measurement.id}) }}">
+                                Pokaż
+                            </a>
+                        {% endif %}
+
+                        {% if is_granted('ROLE_MEASUREMENT_EDIT') %}
+                            <a class="btn btn-warning btn-sm"
+                               href="{{ path('app_measurement_edit', {'id': measurement.id}) }}">
+                                Edytuj
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    Brak pomiarów.
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if is_granted('ROLE_MEASUREMENT_NEW') %}
+            <a href="{{ path('app_measurement_new') }}" class="btn btn-success mt-2">
+                + Dodaj pomiar
+            </a>
+        {% endif %}
+    </div>
 {% endblock %}
