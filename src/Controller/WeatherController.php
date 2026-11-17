@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Location;
-use App\Repository\MeasurementRepository;
+use App\Service\WeatherUtil;
 use App\Repository\LocationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +16,7 @@ public function city(
     string $city,
     string $country,
     LocationRepository $locationRepository,
-    MeasurementRepository $repository
+    WeatherUtil $util
 ): Response {
     $location = $locationRepository->findByCityAndCountry($city, $country);
 
@@ -24,7 +24,7 @@ public function city(
         throw $this->createNotFoundException('Location not found');
     }
 
-    $measurements = $repository->findByLocation($location);
+    $measurements = $util->getWeatherForCountryAndCity($country, $city);
 
     return $this->render('weather/city.html.twig', [
         'location' => $location,
